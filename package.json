@@ -1,0 +1,33 @@
+{
+  "name": "gql-hooks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint ./src/index.ts",
+    "build": "tsc",
+    "prepare": "npm run build",
+    "preversion": "npm run lint"
+  },
+  "keywords": [
+    "graphql",
+    "react",
+    "hooks",
+    "fetch",
+    "query",
+    "subscription",
+    "subscribe"
+  ],
+  "author": "Lindsay Wardell",
+  "license": "MIT",
+  "dependencies": {
+    "@jetblack/graphql-client": "^4.0.2",
+    "react": "^16.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "typescript": "^3.5.3"
+  }
+}
