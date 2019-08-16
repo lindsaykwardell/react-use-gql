@@ -1,5 +1,5 @@
 {
-  "name": "gql-hooks",
+  "name": "react-use-gql",
   "version": "0.1.0",
   "description": "",
   "main": "lib/index.js",
@@ -22,6 +22,10 @@
   ],
   "author": "Lindsay Wardell",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lindsaykwardell/react-use-gql.git"
+  },
   "dependencies": {
     "@jetblack/graphql-client": "^4.0.2",
     "react": "^16.9.0"
@@ -29,5 +33,8 @@
   "devDependencies": {
     "@types/react": "^16.9.2",
     "typescript": "^3.5.3"
-  }
+  },
+  "files": [
+    "lib/**/*"
+  ]
 }
