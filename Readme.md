@@ -1,4 +1,4 @@
-# natural-order
+# react-use-gql
 
 ### **React Hooks library to allow GraphQL Query, Mutation, and Subscription**
 
@@ -36,31 +36,31 @@ settings: {
 }
 
 gqlFetch: <T>(
-    query: string, 
+    query: string,
     variables?: {
       [key: string]: string;
-    }, 
-    operationName?: string, 
+    },
+    operationName?: string,
     options?: {
       [key: string]: string;
     }) => Promise<T>
 
 useGQL: <T>(
-    query: string, 
-    wait?: boolean, 
+    query: string,
+    wait?: boolean,
     variables?: {
       [key: string]: string;
-    }, 
-    operationName?: string, 
+    },
+    operationName?: string,
     options?: {
       [key: string]: string;
     }) => [T, () => void]
 
 useSub: <T>(
-    query: string, 
+    query: string,
     variables?: {
       [key: string]: string;
-    }, 
+    },
     operationName?: string
     ) => T
 
@@ -86,7 +86,8 @@ The HTTP method to use for querying. Defaults to POST.
 
 `fetch.headers: { [key: string]: string; };`
 
-The HTTP headers to use on queries. Defaults to: 
+The HTTP headers to use on queries. Defaults to:
+
 ```
 headers: { "Content-Type": "application/json" }
 ```
@@ -98,6 +99,7 @@ headers: { "Content-Type": "application/json" }
 The GraphQL query. Examples:
 
 Query:
+
 ```
 {
   users {
@@ -106,7 +108,8 @@ Query:
 }
 ```
 
-Mutation: 
+Mutation:
+
 ```
 mutation: {
   createUser (
@@ -118,6 +121,7 @@ mutation: {
 ```
 
 Subscription:
+
 ```
 {
   subscription: {
@@ -132,8 +136,6 @@ Subscription:
 
 _(useGQL only)_ Tells the hook whether to run the query immediately on load, or wait for a manual call.
 
-
-
 `variables?: { [key: string]: string; }`
 
 Any variables required by the GraphQL query.
@@ -146,6 +148,56 @@ The operation name for the query (not required)
 
 Any options to pass into the fetch() request.
 
+<a id="/example"></a>&nbsp;
+
+## Example
+
+Basic example using `create-react-app`:
+
+```
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import { settings, useSub, useGQL } from "./lib/index";
+
+settings.url = "http://localhost:4000";
+settings.subUrl = "ws://localhost:4000";
+
+function App() {
+  const data = useSub<{ count: number }>(`subscription {count}`);
+  const [query, setQuery] = useState(`{
+    users {
+      name
+    }
+  }`);
+  const [results, runQuery] = useGQL<{
+    users: { name: string; age: number }[];
+  }>(query, true);
+
+  return (
+    <div>
+      <button onClick={() => runQuery()}>Click me to run the query</button>
+      <button
+        onClick={() =>
+          setQuery(`{
+    users {
+      age
+    }
+  }`)
+        }
+      >Click me to change the query!</button>
+      Current count: {data && data.count}
+      {results &&
+        results.users.map(user => (
+          <div>
+            Hello, {user.name ? user.name : `you are ${user.age} years old`}!
+          </div>
+        ))}
+    </div>
+  );
+}
+
+export default App;
+```
 
 <a id="/license"></a>&nbsp;
 
