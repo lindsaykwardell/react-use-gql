@@ -15,5 +15,8 @@ export default <T>(
       operationName
     })
   })
-    .then(res => res.json())
+    .then(res => {
+      if (res.ok) return res.json();
+      else return Promise.reject(res);
+    })
     .then(res => res.data);

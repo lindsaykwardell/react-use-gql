@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import gqlFetch from "./gqlFetch";
+import settings from "./settings";
 
 export default <T>(
   query: string,
@@ -7,23 +8,54 @@ export default <T>(
   variables?: { [key: string]: string },
   operationName?: string,
   options?: { [key: string]: string }
-): [T, () => void] => {
+): [T, () => void, boolean, Response] => {
   const [results, setResults] = useState<T>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Response>();
   const [disabled, toggleDisabled] = useState(wait !== null ? wait : false);
   const [num, setNum] = useState(0);
 
   const runQuery = () => setNum(num + 1);
 
   useEffect(() => {
-    if (num > 0)
-      gqlFetch<T>(query, variables, operationName, options).then(data =>
-        setResults(data)
-      );
+    if (num > 0) {
+      setError(null);
+      setLoading(true);
+      gqlFetch<T>(query, variables, operationName, options)
+        .then(data => {
+          setLoading(false);
+          setResults(data);
+        })
+        .catch((err: Response) => {
+          setLoading(false);
+          if (err.toString().includes("TypeError: ")) {
+            const error: Response = {
+              status: 500,
+              statusText: err.toString(),
+              headers: null,
+              ok: false,
+              redirected: null,
+              trailer: null,
+              type: null,
+              url: settings.url,
+              clone: null,
+              body: null,
+              bodyUsed: null,
+              arrayBuffer: null,
+              blob: null,
+              formData: null,
+              json: null,
+              text: null
+            };
+            setError(error);
+          } else setError(err);
+        });
+    }
   }, [num]);
 
   useEffect(() => {
     if (!disabled) setNum(num + 1);
   }, [query, disabled, variables, operationName, options]);
 
-  return [results, runQuery];
+  return [results, runQuery, loading, error];
 };

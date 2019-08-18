@@ -54,7 +54,7 @@ useGQL: <T>(
     operationName?: string,
     options?: {
       [key: string]: string;
-    }) => [T, () => void]
+    }) => [result: T, call: () => void, loading: boolean, error: Response]
 
 useSub: <T>(
     query: string,
@@ -169,29 +169,35 @@ function App() {
       name
     }
   }`);
-  const [results, runQuery] = useGQL<{
+  const [results, call, loading, error] = useGQL<{
     users: { name: string; age: number }[];
   }>(query, true);
 
   return (
     <div>
-      <button onClick={() => runQuery()}>Click me to run the query</button>
+      <button onClick={() => call()}>Click me to run the query</button>
       <button
         onClick={() =>
           setQuery(`{
-    users {
-      age
-    }
-  }`)
+            users {
+              age
+            }
+          }`)
         }
       >Click me to change the query!</button>
       Current count: {data && data.count}
-      {results &&
-        results.users.map(user => (
-          <div>
-            Hello, {user.name ? user.name : `you are ${user.age} years old`}!
-          </div>
-        ))}
+      <div>
+        {loading 
+          ? <span>Loading...</span> 
+          : error 
+          ? <span>{error.statusText}</span> 
+          : results &&
+          results.users.map(user => (
+            <div>
+              Hello, {user.name ? user.name : `you are ${user.age} years old`}!
+            </div>
+          ))}
+      </div>
     </div>
   );
 }
