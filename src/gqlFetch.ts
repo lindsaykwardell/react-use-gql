@@ -15,8 +15,12 @@ export default <T>(
       operationName
     })
   })
-    .then(res => {
-      if (res.ok) return res.json();
-      else return Promise.reject(res);
+    .then(async res => {
+      if (res.ok) {
+        const parsed = await res.json();
+        if (parsed.errors) return Promise.reject(res);
+        return parsed;
+      }
+      return Promise.reject(res);
     })
     .then(res => res.data);
