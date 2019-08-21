@@ -17,7 +17,6 @@ export default <T>(
   })
     .then(async res => {
       if (res.ok) {
-        console.log(res.body);
         const body = await res.json();
         if (body.errors) return Promise.reject({ res, body });
         return body;
