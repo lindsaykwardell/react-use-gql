@@ -54,7 +54,7 @@ useGQL: <T>(
     operationName?: string,
     options?: {
       [key: string]: string;
-    }) => [result: T, call: () => void, loading: boolean, error: Response]
+    }) => [result: T, call: () => void, loading: boolean, error: IGqlError]
 
 useSub: <T>(
     query: string,
@@ -63,6 +63,11 @@ useSub: <T>(
     },
     operationName?: string
     ) => T
+
+interface IGqlError {
+  res: Response
+  body: any
+}
 
 ```
 
