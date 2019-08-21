@@ -17,10 +17,11 @@ export default <T>(
   })
     .then(async res => {
       if (res.ok) {
-        const parsed = await res.json();
-        if (parsed.errors) return Promise.reject(res);
-        return parsed;
+        console.log(res.body);
+        const body = await res.json();
+        if (body.errors) return Promise.reject({ res, body });
+        return body;
       }
-      return Promise.reject(res);
+      return Promise.reject({ res, body: await res.json() });
     })
     .then(res => res.data);

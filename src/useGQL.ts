@@ -8,10 +8,10 @@ export default <T>(
   variables?: { [key: string]: string },
   operationName?: string,
   options?: { [key: string]: string }
-): [T, () => void, boolean, Response] => {
+): [T, () => void, boolean, IGqlError] => {
   const [results, setResults] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Response>();
+  const [error, setError] = useState<IGqlError>();
   const [disabled, toggleDisabled] = useState(wait !== null ? wait : false);
   const [num, setNum] = useState(0);
 
@@ -26,9 +26,9 @@ export default <T>(
           setLoading(false);
           setResults(data);
         })
-        .catch((err: Response) => {
+        .catch((err: IGqlError) => {
           setLoading(false);
-          if (err.toString().includes("TypeError: ")) {
+          if (err.res.toString().includes("TypeError: ")) {
             const error: Response = {
               status: 500,
               statusText: err.toString(),
@@ -47,7 +47,7 @@ export default <T>(
               json: null,
               text: null
             };
-            setError(error);
+            setError({ res: error, body: null });
           } else setError(err);
         });
     }
