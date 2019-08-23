@@ -54,12 +54,7 @@ useGQL: <T>(
     operationName?: string,
     options?: {
       [key: string]: string;
-    }) => [
-      result: T, 
-      call: () => void, 
-      loading: boolean, 
-      error: Response, 
-      setResult: React.Dispatch<React.SetStateAction<T>>]
+    }) => [result: T, call: () => void, loading: boolean, error: IGqlError, setResult: React.Dispatch<React.SetStateAction<T>>]
 
 useSub: <T>(
     query: string,
@@ -68,6 +63,11 @@ useSub: <T>(
     },
     operationName?: string
     ) => T
+
+interface IGqlError {
+  res: Response
+  body: any
+}
 
 ```
 
