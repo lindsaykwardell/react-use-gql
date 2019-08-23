@@ -8,10 +8,11 @@ export default <T>(
   variables?: { [key: string]: string },
   operationName?: string,
   options?: { [key: string]: string }
-): [T, () => void, boolean, IGqlError] => {
-  const [results, setResults] = useState<T>();
+): [T, () => void, boolean, Response, React.Dispatch<React.SetStateAction<T>>
+] => {
+  const [result, setResult] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<IGqlError>();
+  const [error, setError] = useState<Response>();
   const [disabled, toggleDisabled] = useState(wait !== null ? wait : false);
   const [num, setNum] = useState(0);
 
@@ -24,11 +25,11 @@ export default <T>(
       gqlFetch<T>(query, variables, operationName, options)
         .then(data => {
           setLoading(false);
-          setResults(data);
+          setResult(data);
         })
-        .catch((err: IGqlError) => {
+        .catch((err: Response) => {
           setLoading(false);
-          if (err.res.toString().includes("TypeError: ")) {
+          if (err.toString().includes("TypeError: ")) {
             const error: Response = {
               status: 500,
               statusText: err.toString(),
@@ -47,7 +48,7 @@ export default <T>(
               json: null,
               text: null
             };
-            setError({ res: error, body: null });
+            setError(error);
           } else setError(err);
         });
     }
@@ -57,5 +58,5 @@ export default <T>(
     if (!disabled) setNum(num + 1);
   }, [query, disabled, variables, operationName, options]);
 
-  return [results, runQuery, loading, error];
+  return [result, runQuery, loading, error, setResult];
 };

@@ -54,7 +54,12 @@ useGQL: <T>(
     operationName?: string,
     options?: {
       [key: string]: string;
-    }) => [result: T, call: () => void, loading: boolean, error: IGqlError]
+    }) => [
+      result: T, 
+      call: () => void, 
+      loading: boolean, 
+      error: Response, 
+      setResult: React.Dispatch<React.SetStateAction<T>>]
 
 useSub: <T>(
     query: string,
@@ -63,11 +68,6 @@ useSub: <T>(
     },
     operationName?: string
     ) => T
-
-interface IGqlError {
-  res: Response
-  body: any
-}
 
 ```
 
@@ -174,7 +174,7 @@ function App() {
       name
     }
   }`);
-  const [results, call, loading, error] = useGQL<{
+  const [result, call, loading, error, setResult] = useGQL<{
     users: { name: string; age: number }[];
   }>(query, true);
 
